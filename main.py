@@ -1,8 +1,3 @@
-# --------------------------- #
-# Made by GorouFlex           #
-# Ported from rfoal/duolingo  #
-# Version 1.7                 #
-# --------------------------- #
 import os
 import requests
 import json
@@ -50,13 +45,16 @@ if os.getenv('GITHUB_ACTIONS') == 'true':
     original_response = requests.get(original_url, timeout=10000)
     # If the API response 200 not other code to prevent some unexpected things
     if user_response.status_code == 200 and original_response.status_code == 200:
-        user_commit = user_response.json()[0]['sha']
-        original_commit = original_response.json()[0]['sha']
-        if user_commit == original_commit:
-            print(f"{colors.OKGREEN}Your repo is up-to-date with the original repo{colors.ENDC}")
+        if user_response.json() and original_response.json():
+            user_commit = user_response.json()[0]['sha']
+            original_commit = original_response.json()[0]['sha']
+            if user_commit == original_commit:
+                print(f"{colors.OKGREEN}Your repo is up-to-date with the original repo{colors.ENDC}")
+            else:
+                print(f"{colors.WARNING}Your repo is not up-to-date with the original repo{colors.ENDC}")
+                print(f"{colors.FAIL}Please update your repo to the latest commit{colors.ENDC}{colors.FAIL} to get new updates and bug fixes{colors.ENDC}")
         else:
-            print(f"{colors.WARNING}Your repo is not up-to-date with the original repo{colors.ENDC}")
-            print(f"{colors.FAIL}Please update your repo to the latest commit{colors.ENDC}{colors.FAIL} to get new updates and bug fixes{colors.ENDC}")
+            print(f"{colors.FAIL}No commits found in the repository{colors.ENDC}")
     else:
         print(f"{colors.WARNING}--------- Traceback log ---------{colors.ENDC}\n{colors.FAIL}❌ Error code 4: Failed to fetch commit information\nPlease refer to: https://github.com/gorouflex/HoneygainPot/blob/main/Docs/Debug.md for more information\nOr create an Issue on GitHub if it still doesn't work for you.{colors.ENDC}")
     print(f"{colors.WARNING}Lessons: {os.getenv('LESSONS')}{colors.ENDC}")
